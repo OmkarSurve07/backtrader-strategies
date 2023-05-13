@@ -2,7 +2,7 @@ import backtrader as bt
 import datetime
 import pandas as pd
 
-from strategy import TestStrategy
+from strategies.strategy import TestStrategy
 
 
 df = pd.read_csv("NIFTY-I.csv")
