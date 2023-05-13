@@ -29,7 +29,7 @@ data = bt.feeds.YahooFinanceCSVData(
 data = bt.feeds.GenericCSVData(
     dataname="NIFTY-I.csv",
     # Do not pass values before this date
-    fromdate=datetime.datetime(2015, 1, 1),
+    fromdate=datetime.datetime(2022, 1, 1),
     # Do not pass values after this date
     todate=datetime.datetime(2022, 12, 31),
     reverse=False,
@@ -46,8 +46,13 @@ cerebro.adddata(data)
 
 cerebro.addstrategy(TestStrategy)
 
+# To manipulate the qunatity of stocks
+cerebro.addsizer(bt.sizers.FixedSize, stake=10)
+
 print("Start Portfolio Value: %.2f" % cerebro.broker.getvalue())
 
 cerebro.run()
 
 print("End Portfolio Value: %.2f" % cerebro.broker.getvalue())
+
+cerebro.plot()
