@@ -3,6 +3,30 @@ import backtrader as bt
 """A stock price goes deep twice in a row and we buy into it, hold it for X days, and then sell it"""
 
 
+class CurrentMonthHighLow(bt.Indicator):
+    """
+    This indicator calculates the Current Month High (CMH) and Current Month Low (CML).
+    """
+
+    lines = ("cmh", "cml")
+
+    def __init__(self):
+        super().__init__()
+        self.addminperiod(1)
+        self.current_month = None
+
+    def next(self):
+        current_month = self.data.datetime.date(0).month
+        print(current_month)
+        if current_month != self.current_month:
+            self.lines.cmh[0] = self.data.high[0]
+            self.lines.cml[0] = self.data.low[0]
+            self.current_month = current_month
+        else:
+            self.lines.cmh[0] = max(self.lines.cmh[-1], self.data.high[0])
+            self.lines.cml[0] = min(self.lines.cml[-1], self.data.low[0])
+
+
 # Create a Strategy
 class TestStrategy(bt.Strategy):
     def log(self, txt, dt=None):
@@ -14,6 +38,7 @@ class TestStrategy(bt.Strategy):
         # Keep a reference to the "close" line in the data[0] dataseries
         self.dataclose = self.datas[0].close
         self.order = None
+        self.CMH = CurrentMonthHighLow()
 
     def notify_order(self, order):
         # return super().notify_order(order)
